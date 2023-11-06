@@ -7,6 +7,8 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -88,6 +90,16 @@ public class MainActivity extends AppCompatActivity {
                 mStartForResult.launch(intent);
             }
         });
+
+        //тоже для удаления(слушатель долгого нажатия)
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                showDeleteConfirmationDialog(i);
+                return true;
+            }
+        });
+
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,4 +110,26 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    //метод для удаления зажатием
+    private void showDeleteConfirmationDialog(final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Удалить этот элемент?");
+        builder.setPositiveButton("Удалить", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dataItems.remove(position);
+                adapter.notifyDataSetChanged();
+
+                adapter.notifyDataSetChanged();
+            }
+        });
+        builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();}
 }
