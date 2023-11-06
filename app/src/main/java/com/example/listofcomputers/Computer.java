@@ -13,8 +13,7 @@ public class Computer implements Serializable {
     }
 
 
-    public Computer(int id, String name, String status, String location, String lastOnline) {
-        this.id = id;
+    public Computer(String name, String status, String location, String lastOnline) {
         this.name = name;
         this.status = status;
         this.location = location;

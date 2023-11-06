@@ -108,7 +108,6 @@ public class InfoActivity extends AppCompatActivity {
                 resultIntent.putExtra("num", numberComputer); // Номер заметки, которую мы обновили
                 resultIntent.putExtra("updatedComputer", CurrentComputer); // Обновленный объект Note
 
-                resultIntent.putExtra("list", resultItems);
 
                 // Устанавливаем результат и передаем Intent обратно в MainActivity
                 setResult(Activity.RESULT_OK, resultIntent);
