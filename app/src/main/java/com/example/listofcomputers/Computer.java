@@ -1,6 +1,8 @@
 package com.example.listofcomputers;
 
-public class Computer {
+import java.io.Serializable;
+
+public class Computer implements Serializable {
     private int id;
     private String name;
     private String status;
@@ -10,8 +12,6 @@ public class Computer {
     public Computer() {
     }
 
-    // Приватное статическое поле для хранения единственного экземпляра класса
-    private static Computer instance;
 
     public Computer(int id, String name, String status, String location, String lastOnline) {
         this.id = id;

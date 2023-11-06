@@ -9,23 +9,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-
-public class InfoActivity extends AppCompatActivity {
+public class AddActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_info);
+        setContentView(R.layout.activity_add);
         DataBaseAccessor databaseAccessor = new DataBaseAccessor(this);
-        Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
-        Computer CurrentComputer = (Computer) bundle.get("computer");
-        int numberComputer = bundle.getInt("number");
 
         // Настройка полей для редактирования
         EditText name = findViewById(R.id.name);
@@ -33,17 +23,6 @@ public class InfoActivity extends AppCompatActivity {
         EditText location = findViewById(R.id.location);
         EditText online = findViewById(R.id.online);
 
-        int currentId = CurrentComputer.getId();
-
-        String currentName = CurrentComputer.getName();
-        String currentStatus = CurrentComputer.getStatus();
-        String currentLocation = CurrentComputer.getLocation();
-        String currentOnline = CurrentComputer.getLastOnline();
-
-        name.setText(currentName);
-        status.setText(currentStatus);
-        location.setText(currentLocation);
-        online.setText(currentOnline);
 
         // Обработчики событий для полей редактирования
         name.setOnClickListener(new View.OnClickListener() {
@@ -93,22 +72,10 @@ public class InfoActivity extends AppCompatActivity {
                 String editedStatus = status.getText().toString();
                 String editedLocation = location.getText().toString();
                 String editedLastOnline = online.getText().toString();
-
-                CurrentComputer.setId(currentId);
-                CurrentComputer.setName(editedName);
-                CurrentComputer.setStatus(editedStatus);
-                CurrentComputer.setLocation(editedLocation);
-                CurrentComputer.setLastOnline(editedLastOnline);
                 // Обновляем данные в объекте
-                databaseAccessor.updateNote(currentId, editedName, editedStatus, editedLocation, editedLastOnline);
-
-                ArrayList<Computer> resultItems = databaseAccessor.getAllData();
+                databaseAccessor.addComputer(editedName, editedStatus, editedLocation, editedLastOnline);
 
                 Intent resultIntent = new Intent();
-                resultIntent.putExtra("num", numberComputer); // Номер заметки, которую мы обновили
-                resultIntent.putExtra("updatedComputer", CurrentComputer); // Обновленный объект Note
-
-                resultIntent.putExtra("list", resultItems);
 
                 // Устанавливаем результат и передаем Intent обратно в MainActivity
                 setResult(Activity.RESULT_OK, resultIntent);
@@ -119,5 +86,4 @@ public class InfoActivity extends AppCompatActivity {
             }
         });
     }
-
 }

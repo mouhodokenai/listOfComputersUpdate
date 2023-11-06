@@ -1,51 +1,92 @@
 package com.example.listofcomputers;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private ListView listView;
+    private ArrayAdapter adapter;
     static ArrayList<Computer> dataItems;
+
+
+
+    // Запуск активности для получения результата
+    ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+
+                    listView = findViewById(R.id.listView);
+
+                    if(result.getResultCode() == Activity.RESULT_OK){
+                        Intent data = result.getData();
+                        int updatedNum = data.getIntExtra("num", -1);
+                        Computer updatedComputer = (Computer) data.getSerializableExtra("updatedComputer");
+
+
+                        dataItems.set(updatedNum, updatedComputer);
+
+                        // Обновление адаптера
+
+                        listView.setAdapter(adapter);
+                    }
+
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        DataBaseAccessor databaseAccessor = new DataBaseAccessor(this); // Замените 'this' на ваш контекст
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, dataItems);
 
-        ListView listView = findViewById(R.id.listView);
+        DataBaseAccessor databaseAccessor = new DataBaseAccessor(this);
 
-        dataItems = databaseAccessor.getAllData(); // Реализуйте этот метод в DatabaseHelper
+        listView = findViewById(R.id.listView);
 
-        ArrayAdapter<Computer> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, dataItems);
+        Button addButton = findViewById(R.id.addButton);
+
+        dataItems = databaseAccessor.getAllData(); //
+
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                // получаем выбранный элемент
-                Computer selectedComputer = dataItems.get(i);
                 // переходим к второй активности и передаем данные
+
+                Computer selectedComputer = dataItems.get(i);
                 Intent intent = new Intent(MainActivity.this, InfoActivity.class);
-                intent.putExtra("computer", i);
-                startActivity(intent);
-                //mStartForResult.launch(intent);
+                intent.putExtra("number", i);
+                intent.putExtra("computer", selectedComputer);
+               // startActivity(intent);
+                mStartForResult.launch(intent);
             }
         });
-    }
 
-    
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, AddActivity.class);
+                startActivity(intent);
+            }
+        });
+
+    }
 
 }

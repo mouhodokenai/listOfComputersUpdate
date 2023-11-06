@@ -75,22 +75,6 @@ public class DataBaseAccessor extends SQLiteOpenHelper
     }
 
 
-/*
-    public SimpleCursorAdapter getCursorAdapter(Context context, int layout, int[] viewIds)
-    {
-        Cursor cursor = getReadableDatabase().rawQuery("SELECT * FROM " + TABLE_COMPUTERS,null);
-
-        String[] columns = new  String[] {COLUMN_NAME,COLUMN_STATUS};
-
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(context,layout,cursor,columns,viewIds,0);
-        return  adapter;
-    }
-
- */
-
-
-
-
     public void updateNote(int id, String name, String status, String location, String online) {
         // выполнить запрос на обновление БД
         getReadableDatabase().execSQL("UPDATE "+ TABLE_COMPUTERS
@@ -101,6 +85,10 @@ public class DataBaseAccessor extends SQLiteOpenHelper
                 + COLUMN_STATUS + "='" + status + "'"
                 + " WHERE "
                 + COLUMN_ID + "=" + id);
+    }
+
+    public void addComputer(String name, String status, String location, String online) {
+        getReadableDatabase().execSQL("INSERT INTO " + TABLE_COMPUTERS + "(" + COLUMN_NAME + ", " + COLUMN_STATUS + ", " + COLUMN_LOCATION + ", " + COLUMN_LAST_ONLINE + ") values('" + name + "','" + status + "', '" + location + "', '" + online + "')");
     }
 
     @Override
