@@ -84,6 +84,7 @@ public class InfoActivity extends AppCompatActivity {
         });
 
         Button saveButton = findViewById(R.id.saveButton);
+        Button deleteButton = findViewById(R.id.deleteButton);
         // Обработчик события для кнопки сохранения
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,8 +107,25 @@ public class InfoActivity extends AppCompatActivity {
 
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("num", numberComputer); // Номер заметки, которую мы обновили
+                resultIntent.putExtra("del", false);
                 resultIntent.putExtra("updatedComputer", CurrentComputer); // Обновленный объект Note
 
+
+                // Устанавливаем результат и передаем Intent обратно в MainActivity
+                setResult(Activity.RESULT_OK, resultIntent);
+
+                // Завершаем Activity
+                finish();
+
+            }
+        });
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("num", numberComputer);
+                resultIntent.putExtra("del", true);
 
                 // Устанавливаем результат и передаем Intent обратно в MainActivity
                 setResult(Activity.RESULT_OK, resultIntent);

@@ -46,8 +46,13 @@ public class MainActivity extends AppCompatActivity {
                         Intent data = result.getData();
                         int updatedNum = data.getIntExtra("num", -1);
                         Computer updatedComputer = (Computer) data.getSerializableExtra("updatedComputer");
+                        boolean del = data.getBooleanExtra("del", false);
 
-                        dataItems.set(updatedNum, updatedComputer);
+                        if (del){
+                            dataItems.remove(updatedNum);
+                        } else {
+                            dataItems.set(updatedNum, updatedComputer);
+                        }
 
                         // Обновление адаптера
                         adapter.notifyDataSetChanged();
