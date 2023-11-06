@@ -7,7 +7,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
+import android.widget.TextView;
 
 public class AddActivity extends AppCompatActivity {
 
@@ -22,12 +25,13 @@ public class AddActivity extends AppCompatActivity {
 
         // Настройка полей для редактирования
         EditText name = findViewById(R.id.name);
-        EditText status = findViewById(R.id.status);
+        TextView status = findViewById(R.id.status);
         EditText location = findViewById(R.id.location);
         EditText online = findViewById(R.id.online);
 
 
         // Обработчики событий для полей редактирования
+
         name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -37,24 +41,15 @@ public class AddActivity extends AppCompatActivity {
                 name.requestFocus();
             }
         });
-        status.setOnClickListener(new View.OnClickListener() {
+        Switch stateBut = findViewById(R.id.stateBut);
+        stateBut .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                status.setFocusableInTouchMode(true);
-                status.setFocusable(true);
-                status.setCursorVisible(true);
-                status.requestFocus();
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                String newStatus = isChecked ? "Online" : "Offline";
+                status.setText(newStatus);
             }
         });
-        location.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                location.setFocusableInTouchMode(true);
-                location.setFocusable(true);
-                location.setCursorVisible(true);
-                location.requestFocus();
-            }
-        });
+
         online.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,5 +87,6 @@ public class AddActivity extends AppCompatActivity {
 
             }
         });
+
     }
 }

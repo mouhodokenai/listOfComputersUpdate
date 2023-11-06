@@ -2,21 +2,23 @@ package com.example.listofcomputers;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
+import android.widget.TextView;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class InfoActivity extends AppCompatActivity {
 
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +31,7 @@ public class InfoActivity extends AppCompatActivity {
 
         // Настройка полей для редактирования
         EditText name = findViewById(R.id.name);
-        EditText status = findViewById(R.id.status);
+        TextView status = findViewById(R.id.status);
         EditText location = findViewById(R.id.location);
         EditText online = findViewById(R.id.online);
 
@@ -55,15 +57,7 @@ public class InfoActivity extends AppCompatActivity {
                 name.requestFocus();
             }
         });
-        status.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                status.setFocusableInTouchMode(true);
-                status.setFocusable(true);
-                status.setCursorVisible(true);
-                status.requestFocus();
-            }
-        });
+
         location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,6 +74,24 @@ public class InfoActivity extends AppCompatActivity {
                 online.setFocusable(true);
                 online.setCursorVisible(true);
                 online.requestFocus();
+            }
+        });
+
+        Switch stateBut = findViewById(R.id.stateBut);
+        SharedPreferences sharedPref = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        boolean switchState = sharedPref.getBoolean("switchState", false);
+
+        stateBut.setChecked(switchState);
+
+        stateBut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                String newStatus = isChecked ? "Online" : "Offline";
+                status.setText(newStatus);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putBoolean("switchState", isChecked);
+                editor.apply();
+
             }
         });
 
@@ -130,11 +142,8 @@ public class InfoActivity extends AppCompatActivity {
                 // Устанавливаем результат и передаем Intent обратно в MainActivity
                 setResult(Activity.RESULT_OK, resultIntent);
 
-                // Завершаем Activity
                 finish();
-
             }
         });
     }
-
 }

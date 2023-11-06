@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/fon"
     tools:context=".MainActivity">
 
     <ListView
@@ -13,7 +14,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.276"
-        tools:layout_editor_absoluteX="-2dp" />
+        tools:layout_editor_absoluteX="-2dp"
+        tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/addButton"
