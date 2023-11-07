@@ -113,14 +113,16 @@ public class MainActivity extends AppCompatActivity {
 
     //метод для удаления зажатием
     private void showDeleteConfirmationDialog(final int position) {
+        DataBaseAccessor databaseAccessor = new DataBaseAccessor(this);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Удалить этот элемент?");
         builder.setPositiveButton("Удалить", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                Computer selectedComputer = dataItems.get(position);
+                databaseAccessor.deleteComputer(selectedComputer.getId());
                 dataItems.remove(position);
                 adapter.notifyDataSetChanged();
-
                 adapter.notifyDataSetChanged();
             }
         });

@@ -5,8 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.widget.SimpleCursorAdapter;
-import android.database.Cursor;
 
 import java.util.ArrayList;
 
@@ -27,7 +25,6 @@ public class DataBaseAccessor extends SQLiteOpenHelper
     private static final String COLUMN_STATUS = "status";
     private static final String COLUMN_LOCATION = "location";
     private static final String COLUMN_LAST_ONLINE = "last_online";
-
 
 
 
@@ -75,7 +72,7 @@ public class DataBaseAccessor extends SQLiteOpenHelper
     }
 
 
-    public void updateNote(int id, String name, String status, String location, String online) {
+    public void updateComputer(int id, String name, String status, String location, String online) {
         // выполнить запрос на обновление БД
         getReadableDatabase().execSQL("UPDATE "+ TABLE_COMPUTERS
                 + " SET "
@@ -89,6 +86,19 @@ public class DataBaseAccessor extends SQLiteOpenHelper
 
     public void addComputer(String name, String status, String location, String online) {
         getReadableDatabase().execSQL("INSERT INTO " + TABLE_COMPUTERS + "(" + COLUMN_NAME + ", " + COLUMN_STATUS + ", " + COLUMN_LOCATION + ", " + COLUMN_LAST_ONLINE + ") values('" + name + "','" + status + "', '" + location + "', '" + online + "')");
+    }
+
+    public void deleteComputer(int id){
+        getReadableDatabase().execSQL("DELETE FROM " + TABLE_COMPUTERS + " WHERE " +  COLUMN_ID + " = " + id + ";");
+        System.out.println("DELETE FROM" + TABLE_COMPUTERS + " + WHERE " +  COLUMN_ID + " = " + id + ";");
+    }
+
+    public void editStatus(int id, String status){
+        getReadableDatabase().execSQL("UPDATE "+ TABLE_COMPUTERS
+                + " SET "
+                + COLUMN_STATUS + "='" + status + "'"
+                + " WHERE "
+                + COLUMN_ID + "=" + id);
     }
 
     @Override

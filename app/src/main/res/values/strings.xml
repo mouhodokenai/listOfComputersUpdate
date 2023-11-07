@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">listOfComputers</string>
+    <string name="app_name">Список компьютеров</string>
+    <string name="name">Имя компьютера</string>
+    <string name="status">Статус</string>
+    <string name="location">Местоположение</string>
+    <string name="online">Последний выход в сеть</string>
+    <string name="save">Сохранить</string>
 </resources>

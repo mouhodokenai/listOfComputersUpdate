@@ -13,6 +13,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -78,22 +79,29 @@ public class InfoActivity extends AppCompatActivity {
         });
 
         Switch stateBut = findViewById(R.id.stateBut);
-        SharedPreferences sharedPref = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-        boolean switchState = sharedPref.getBoolean("switchState", false);
 
-        stateBut.setChecked(switchState);
+        SharedPreferences sharedPref = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+
+
+        if (currentStatus.equals("Online")){
+            stateBut.setChecked(true);
+        } else {
+            stateBut.setChecked(false);
+        }
 
         stateBut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 String newStatus = isChecked ? "Online" : "Offline";
                 status.setText(newStatus);
+                databaseAccessor.editStatus(currentId, newStatus);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putBoolean("switchState", isChecked);
                 editor.apply();
-
             }
         });
+
+
 
         Button saveButton = findViewById(R.id.saveButton);
         Button deleteButton = findViewById(R.id.deleteButton);
@@ -107,28 +115,27 @@ public class InfoActivity extends AppCompatActivity {
                 String editedLocation = location.getText().toString();
                 String editedLastOnline = online.getText().toString();
 
-                CurrentComputer.setId(currentId);
-                CurrentComputer.setName(editedName);
-                CurrentComputer.setStatus(editedStatus);
-                CurrentComputer.setLocation(editedLocation);
-                CurrentComputer.setLastOnline(editedLastOnline);
-                // Обновляем данные в объекте
-                databaseAccessor.updateNote(currentId, editedName, editedStatus, editedLocation, editedLastOnline);
+                if (editedName.isEmpty() || editedStatus.isEmpty() || editedLocation.isEmpty() || editedLastOnline.isEmpty()) {
+                    // Хотя бы одно поле не заполнено, высвечиваем Toast
+                    Toast.makeText(getApplicationContext(), "Заполните все поля", Toast.LENGTH_SHORT).show();
+                } else {
+                    CurrentComputer.setId(currentId);
+                    CurrentComputer.setName(editedName);
+                    CurrentComputer.setStatus(editedStatus);
+                    CurrentComputer.setLocation(editedLocation);
+                    CurrentComputer.setLastOnline(editedLastOnline);
+                    // Обновляем данные в объекте
+                    databaseAccessor.updateComputer(currentId, editedName, editedStatus, editedLocation, editedLastOnline);
 
-                ArrayList<Computer> resultItems = databaseAccessor.getAllData();
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("num", numberComputer); // Номер компьютера, который мы обновили
+                    resultIntent.putExtra("del", false);
+                    resultIntent.putExtra("updatedComputer", CurrentComputer); // Обновленный объект
 
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("num", numberComputer); // Номер заметки, которую мы обновили
-                resultIntent.putExtra("del", false);
-                resultIntent.putExtra("updatedComputer", CurrentComputer); // Обновленный объект Note
-
-
-                // Устанавливаем результат и передаем Intent обратно в MainActivity
-                setResult(Activity.RESULT_OK, resultIntent);
-
-                // Завершаем Activity
-                finish();
-
+                    // Устанавливаем результат и передаем Intent обратно в MainActivity
+                    setResult(Activity.RESULT_OK, resultIntent);
+                    finish();
+                }
             }
         });
         deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -136,6 +143,8 @@ public class InfoActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent resultIntent = new Intent();
+                int id = CurrentComputer.getId();
+                databaseAccessor.deleteComputer(id);
                 resultIntent.putExtra("num", numberComputer);
                 resultIntent.putExtra("del", true);
 
