@@ -32,6 +32,10 @@ public class DataBaseAccessor extends SQLiteOpenHelper
         super(context, DATABASE_NAME, null, DB_VERSION);
     }
 
+    public DataBaseAccessor(FragmentComputers fragmentComputers) {
+        super();
+    }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         // Создать таблицу
