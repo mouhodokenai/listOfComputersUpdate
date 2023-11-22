@@ -1,11 +1,11 @@
 package com.example.listofcomputers;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import androidx.fragment.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -13,32 +13,35 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class AddActivity extends AppCompatActivity {
+public class Fragment_add extends Fragment {
+
+    private EditText name;
+    private TextView status;
+    private EditText location;
+    private EditText online;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add);
-        DataBaseAccessor databaseAccessor = new DataBaseAccessor(this);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_add, container, false);
+
+        DataBaseAccessor databaseAccessor = new DataBaseAccessor(requireContext());
 
         // Настройка полей для редактирования
-        EditText name = findViewById(R.id.name);
-        TextView status = findViewById(R.id.status);
-        EditText location = findViewById(R.id.location);
-        EditText online = findViewById(R.id.online);
+        EditText name = view.findViewById(R.id.name);
+        TextView status = view.findViewById(R.id.status);
+        EditText location = view.findViewById(R.id.location);
+        EditText online = view.findViewById(R.id.online);
 
         // Обработчики событий для полей редактирования
         name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                name.setFocusableInTouchMode(true);
-                name.setFocusable(true);
-                name.setCursorVisible(true);
-                name.requestFocus();
+                setEditTextFocus(name);
             }
         });
-        Switch stateBut = findViewById(R.id.stateBut);
-        stateBut .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+        Switch stateBut = view.findViewById(R.id.stateBut);
+        stateBut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 String newStatus = isChecked ? "Online" : "Offline";
@@ -49,19 +52,14 @@ public class AddActivity extends AppCompatActivity {
         online.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                online.setFocusableInTouchMode(true);
-                online.setFocusable(true);
-                online.setCursorVisible(true);
-                online.requestFocus();
+                setEditTextFocus(online);
             }
         });
 
-        Button saveButton = findViewById(R.id.saveButton);
-        // Обработчик события для кнопки сохранения
+        Button saveButton = view.findViewById(R.id.saveButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Получаем отредактированные данные из полей ввода
                 String editedName = name.getText().toString();
                 String editedStatus = status.getText().toString();
                 String editedLocation = location.getText().toString();
@@ -69,7 +67,7 @@ public class AddActivity extends AppCompatActivity {
 
                 if (editedName.isEmpty() || editedStatus.isEmpty() || editedLocation.isEmpty() || editedLastOnline.isEmpty()) {
                     // Хотя бы одно поле не заполнено, высвечиваем Toast
-                    Toast.makeText(getApplicationContext(), "Заполните все поля", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Заполните все поля", Toast.LENGTH_SHORT).show();
                 } else {
                     Computer newComputer = new Computer(editedName, editedStatus, editedLocation, editedLastOnline);
 
@@ -80,14 +78,21 @@ public class AddActivity extends AppCompatActivity {
                     resultIntent.putExtra("updatedComputer", newComputer); // Обновленный объект
 
                     // Устанавливаем результат и передаем Intent обратно в MainActivity
-                    setResult(Activity.RESULT_OK, resultIntent);
+                    requireActivity().setResult(requireActivity().RESULT_OK, resultIntent);
 
                     // Завершаем Activity
-                    finish();
+                    requireActivity().finish();
                 }
-
             }
         });
 
+        return view;
+    }
+
+    private void setEditTextFocus(EditText editText) {
+        editText.setFocusableInTouchMode(true);
+        editText.setFocusable(true);
+        editText.setCursorVisible(true);
+        editText.requestFocus();
     }
 }

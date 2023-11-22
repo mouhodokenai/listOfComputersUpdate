@@ -5,11 +5,11 @@
     <string name="location">Местоположение</string>
     <string name="online">Последний выход в сеть</string>
     <string name="save">Сохранить</string>
-    <string name="app_name">DateTimePickerDialogsProject</string>
+    <string name="ap_name">DateTimePickerDialogsProject</string>
     <string name="time_edit_text_hint">здесь будет время..</string>
     <string name="date_edit_text_hint">здесь будет дата..</string>
     <string name="btn_time_text">Время</string>
     <string name="btn_date_text">Дата</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="delete">удалить</string>
 </resources>

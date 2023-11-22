@@ -5,70 +5,82 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TimePicker;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
+
     private ListView listView;
     private ArrayAdapter adapter;
     static ArrayList<Computer> dataItems;
+    private Fragment_info infoFragment;
+    private Fragment_add addFragment;
 
-    // Запуск активности для получения результата
-    ActivityResultLauncher<Intent> mStartForResult2 = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent data = result.getData();
-                        int updatedNum = data.getIntExtra("num", -1);
-                        Computer updatedComputer = (Computer) data.getSerializableExtra("updatedComputer");
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-                        dataItems.add(updatedComputer);
+        listView = findViewById(R.id.listView);
+        dataItems = new ArrayList<>();
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, dataItems);
+        listView.setAdapter(adapter);
 
-                        // Обновление адаптера
-                        adapter.notifyDataSetChanged();
-                    }
-                }
-            });
-    ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent data = result.getData();
-                        int updatedNum = data.getIntExtra("num", -1);
-                        Computer updatedComputer = (Computer) data.getSerializableExtra("updatedComputer");
-                        boolean del = data.getBooleanExtra("del", false);
+        infoFragment = new Fragment_info();
+        addFragment = new Fragment_add();
 
-                        if (del){
-                            dataItems.remove(updatedNum);
-                        } else {
-                            dataItems.set(updatedNum, updatedComputer);
-                        }
+        FragmentManager fragmentManager = getSupportFragmentManager();
 
-                        // Обновление адаптера
-                        adapter.notifyDataSetChanged();
-                    }
-                }
-            });
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, addFragment); // По умолчанию отображаем Fragment_add
+        fragmentTransaction.commit();
+
+        dataItems.add(new Computer("Computer 1", "Online", "Location 1", "Last Online 1"));
+        dataItems.add(new Computer("Computer 2", "Offline", "Location 2", "Last Online 2"));
+
+        adapter.notifyDataSetChanged();
+
+        Button addButton = findViewById(R.id.addButton);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.fragment_container, addFragment);
+                transaction.commit();
+            }
+        });
+
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("computer", dataItems.get(position)); // Передаем выбранный объект Computer
+
+            int idComp = dataItems.get(position).getId();
+            String nameComp = dataItems.get(position).getName();
+            String statusComp = dataItems.get(position).getStatus();
+            String locationComp = dataItems.get(position).getLocation();
+            String onlineComp = dataItems.get(position).getLastOnline();
+            bundle.putInt("id", idComp);
+            bundle.putString("name", nameComp);
+            bundle.putString("status", statusComp);
+            bundle.putString("location", locationComp);
+            bundle.putString("online", onlineComp);
+            bundle.putInt("number", position);                           // Передаем номер элемента в списке
+
+            infoFragment.setArguments(bundle);
+
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.fragment_container, infoFragment);
+            transaction.commit();
+        });
+    }
 }
-
-

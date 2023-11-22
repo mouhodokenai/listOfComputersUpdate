@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -31,10 +32,12 @@ public class DataBaseAccessor extends SQLiteOpenHelper
     public DataBaseAccessor(Context context) {
         super(context, DATABASE_NAME, null, DB_VERSION);
     }
-
+/*
     public DataBaseAccessor(FragmentComputers fragmentComputers) {
         super();
     }
+
+ */
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -77,6 +80,7 @@ public class DataBaseAccessor extends SQLiteOpenHelper
 
 
     public void updateComputer(int id, String name, String status, String location, String online) {
+        Log.d("TAG2", "onSaveButtonClick2: ");
         // выполнить запрос на обновление БД
         getReadableDatabase().execSQL("UPDATE "+ TABLE_COMPUTERS
                 + " SET "

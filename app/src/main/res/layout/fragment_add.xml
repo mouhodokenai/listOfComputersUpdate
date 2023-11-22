@@ -1,78 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FragmentAdd">
+    tools:context=".Fragment_add">
 
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="340dp"
+        android:layout_marginBottom="55dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="-2dp">
 
-    <EditText
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="@string/name"
-        android:textColor="@color/black"
-        android:textSize="25dp"
-        tools:ignore="MissingConstraints" />
+        <EditText
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="356dp"
+            android:hint="@string/name"
+            android:textColor="@color/black"
+            android:textSize="25dp"
+            tools:ignore="MissingConstraints" />
 
-    <TextView
-        android:id="@+id/status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="@string/status"
-        android:textColor="@color/black"
-        android:textSize="25dp"
-        tools:ignore="MissingConstraints" />
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:hint="@string/status"
+            android:textColor="@color/black"
+            android:textSize="25dp"
+            tools:ignore="MissingConstraints" />
 
-    <EditText
-        android:id="@+id/location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="@string/location"
-        android:textColor="@color/black"
-        android:textSize="25dp"
-        tools:ignore="MissingConstraints" />
+        <EditText
+            android:id="@+id/location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:hint="@string/location"
+            android:textColor="@color/black"
+            android:textSize="25dp"
+            tools:ignore="MissingConstraints" />
 
-    <EditText
-        android:id="@+id/online"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:autofillHints="дд-мм-гггг  чч:мм"
-        android:hint="@string/online"
-        android:inputType="datetime"
-        android:textColor="@color/black"
-        android:textSize="25dp"
-        tools:ignore="MissingConstraints" />
+        <EditText
+            android:id="@+id/online"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:hint="@string/online"
+            android:inputType="datetime"
+            android:textColor="@color/black"
+            android:textSize="25dp"
+            tools:ignore="MissingConstraints" />
 
-    <Button
-        android:id="@+id/saveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:onClick="onAdd"
-        android:text="@string/save"
-        android:backgroundTint="@color/colorButton"
-        tools:ignore="MissingConstraints"
-         />
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="140dp"
+            android:backgroundTint="@color/colorButton"
+            android:text="@string/save"
+            tools:ignore="MissingConstraints" />
 
-    <Button
-        android:id="@+id/deleteButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="96dp"
-        android:text="Удалить"
-        tools:ignore="MissingConstraints"
- />
+        <Switch
+            android:id="@+id/stateBut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="268dp"
+            android:enabled="true"
+            android:minHeight="48dp"
+            android:text="задать статус"
+            tools:ignore="MissingConstraints,UseSwitchCompatOrMaterialXml" />
 
-    <Switch
-        android:id="@+id/stateBut"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="12dp"
-        android:backgroundTint="@color/colorButton"
-        android:enabled="true"
-        android:minHeight="48dp"
-        android:text="изменить статус"
-        tools:ignore="MissingConstraints" />
+        <EditText
+            android:id="@+id/picked_date"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/btn_date"
+            android:layout_toLeftOf="@+id/btn_date"
+            android:hint="@string/date_edit_text_hint"
+            android:inputType="date"
+            android:minHeight="48dp"
+            tools:ignore="MissingConstraints" />
 
-</FrameLayout>
+        <Button
+            android:id="@+id/btn_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="164dp"
+            android:layout_marginEnd="4dp"
+            android:text="@string/btn_date_text"
+            tools:ignore="MissingConstraints" />
+
+        <EditText
+            android:id="@+id/picked_time"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/btn_date"
+            android:layout_toLeftOf="@+id/btn_date"
+            android:hint="@string/time_edit_text_hint"
+            android:inputType="time"
+            android:minHeight="48dp"
+            tools:ignore="MissingConstraints" />
+
+        <Button
+            android:id="@+id/btn_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:text="@string/btn_time_text"
+            tools:ignore="MissingConstraints" />
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
