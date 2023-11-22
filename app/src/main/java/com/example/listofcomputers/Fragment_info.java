@@ -72,7 +72,6 @@ public class Fragment_info extends Fragment {
         location.setOnClickListener(v -> setEditTextFocus(location));
         online.setOnClickListener(v -> setEditTextFocus(online));
 
-        // Ваш код по настройке view
         return view;
     }
 
@@ -94,7 +93,6 @@ public class Fragment_info extends Fragment {
             currentLocation = args.getString("location");
             currentOnline = args.getString("online");
 
-
             /*
             if (currentComputer != null) {
                 String currentName = currentComputer.getName();
@@ -103,12 +101,8 @@ public class Fragment_info extends Fragment {
                 String currentOnline = currentComputer.getLastOnline();
 
              */
-
-
             }
-
         }
-
 
     private void setEditTextFocus(EditText editText) {
         editText.setFocusableInTouchMode(true);
@@ -143,6 +137,12 @@ public class Fragment_info extends Fragment {
             Log.d("TAG", "onSaveButtonClick: ");
             databaseAccessor.updateComputer(currentComputer.getId(), editedName, editedStatus, editedLocation, editedLastOnline);
             Log.d("TAG", "onSaveButtonClick: ");
+
+            MainActivity.dataItems.set(numberComputer, currentComputer);
+
+            // Обновление адаптера
+            MainActivity.adapter.notifyDataSetChanged();
+            getFragmentManager().beginTransaction().remove(this).commit();
         }
     }
 

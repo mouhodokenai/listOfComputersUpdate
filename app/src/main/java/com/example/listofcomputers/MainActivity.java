@@ -21,7 +21,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private ListView listView;
-    private ArrayAdapter adapter;
+    static ArrayAdapter adapter;
     static ArrayList<Computer> dataItems;
     private Fragment_info infoFragment;
     private Fragment_add addFragment;
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, addFragment); // По умолчанию отображаем Fragment_add
+        fragmentTransaction.replace(R.id.fragment_container, addFragment);
         fragmentTransaction.commit();
 
         dataItems.add(new Computer("Computer 1", "Online", "Location 1", "Last Online 1"));
