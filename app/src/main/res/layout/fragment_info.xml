@@ -11,9 +11,9 @@
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="340dp"
-            android:layout_marginBottom="55dp"
+            android:layout_marginBottom="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:layout_editor_absoluteX="34dp">
+            tools:layout_editor_absoluteX="0dp">
 
                 <EditText
                     android:id="@+id/name"
