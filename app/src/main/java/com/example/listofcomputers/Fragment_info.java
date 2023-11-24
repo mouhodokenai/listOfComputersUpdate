@@ -211,6 +211,5 @@ public class Fragment_info extends Fragment {
         // Обновление адаптера и удаление текущего фрагмента
         MainActivity.adapter.notifyDataSetChanged();
         requireFragmentManager().beginTransaction().remove(this).commit();
-
     }
 }
