@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -30,20 +32,19 @@ public class MainActivity extends AppCompatActivity {
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, dataItems);
         listView.setAdapter(adapter);
 
+        // Инициализация фрагментов
         infoFragment = new Fragment_info();
         addFragment = new Fragment_add();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, addFragment);
-        fragmentTransaction.commit();
-
-        dataItems.add(new Computer("Computer 1", "Online", "Location 1", "Last Online 1"));
-        dataItems.add(new Computer("Computer 2", "Offline", "Location 2", "Last Online 2"));
+        // Инициализация данных из базы данных
+        DataBaseAccessor databaseAccessor = new DataBaseAccessor(this);
+        dataItems.addAll(databaseAccessor.getAllData());
 
         adapter.notifyDataSetChanged();
 
+        // Обработчик кнопки "Добавить"
         Button addButton = findViewById(R.id.addButton);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Обработчик нажатия на элемент списка
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Bundle bundle = new Bundle();
             bundle.putSerializable("computer", dataItems.get(position)); // Передаем выбранный объект Computer
@@ -72,9 +74,19 @@ public class MainActivity extends AppCompatActivity {
 
             infoFragment.setArguments(bundle);
 
+            // Создаем объект FragmentTransaction для управления транзакциями фрагментов
             FragmentTransaction transaction = fragmentManager.beginTransaction();
+            // Заменяем текущий фрагмент в контейнере с идентификатором R.id.fragment_container на новый фрагмент (infoFragment)
             transaction.replace(R.id.fragment_container, infoFragment);
+            // Применение изменений
             transaction.commit();
         });
+    }
+
+    // Метод для определения, является ли устройство планшетом
+    public static boolean isTablet(Context context) {
+        return (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 }

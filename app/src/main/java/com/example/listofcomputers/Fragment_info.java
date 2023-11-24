@@ -32,6 +32,8 @@ public class Fragment_info extends Fragment {
     Switch stateBut;
     Button saveButton;
     Button deleteButton;
+    Button timeButton;
+    Button dateButton;
 
     private DataBaseAccessor databaseAccessor;
     private SharedPreferences sharedPref;
@@ -43,6 +45,7 @@ public class Fragment_info extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Настройка интерфейса фрагмента
         View view = inflater.inflate(R.layout.fragment_info, container, false);
         dateAndTime = Calendar.getInstance();
         name = view.findViewById(R.id.name);
@@ -52,21 +55,31 @@ public class Fragment_info extends Fragment {
         stateBut = view.findViewById(R.id.stateBut);
         saveButton = view.findViewById(R.id.saveButton);
         deleteButton = view.findViewById(R.id.deleteButton);
+        timeButton = view.findViewById(R.id.btn_time);
+        dateButton = view.findViewById(R.id.btn_date);
 
+        // Установка слушателей для кнопок выбора даты и времени
+        dateButton.setOnClickListener(v -> setDate(v));
+        timeButton.setOnClickListener(v -> setTime(v));
+
+        // Установка текстовых полей для отображения текущих данных
         name.setText(currentName);
         status.setText(currentStatus);
         location.setText(currentLocation);
         online.setText(currentOnline);
 
+        // Установка состояния переключателя в зависимости от статуса
         if (currentStatus.equals("Online")) {
             stateBut.setChecked(true);
         } else {
             stateBut.setChecked(false);
         }
 
+        // Обработчики для кнопок сохранения и удаления
         saveButton.setOnClickListener(v -> onSaveButtonClick(currentComputer, numberComputer));
         deleteButton.setOnClickListener(v -> onDeleteButtonClick(currentComputer, numberComputer));
 
+        // Обработчик для переключателя состояния
         stateBut.setOnCheckedChangeListener((buttonView, isChecked) -> {
             String newStatus = isChecked ? "Online" : "Offline";
             status.setText(newStatus);
@@ -76,6 +89,7 @@ public class Fragment_info extends Fragment {
             editor.apply();
         });
 
+        // Обработчики для текстовых полей (устанавливают фокус)
         name.setOnClickListener(v -> setEditTextFocus(name));
         location.setOnClickListener(v -> setEditTextFocus(location));
         online.setOnClickListener(v -> setEditTextFocus(online));
@@ -87,9 +101,11 @@ public class Fragment_info extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Инициализация базы данных и SharedPreferences
         databaseAccessor = new DataBaseAccessor(requireContext());
         sharedPref = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
 
+        // Получение аргументов, переданных во фрагмент
         Bundle args = getArguments();
         if (args != null) {
             currentComputer =  (Computer) args.getSerializable("computer");
@@ -100,18 +116,10 @@ public class Fragment_info extends Fragment {
             currentStatus = args.getString("status");
             currentLocation = args.getString("location");
             currentOnline = args.getString("online");
-
-            /*
-            if (currentComputer != null) {
-                String currentName = currentComputer.getName();
-                String currentStatus = currentComputer.getStatus();
-                String currentLocation = currentComputer.getLocation();
-                String currentOnline = currentComputer.getLastOnline();
-
-             */
-            }
         }
+    }
 
+    // Метод для установки фокуса на EditText
     private void setEditTextFocus(EditText editText) {
         editText.setFocusableInTouchMode(true);
         editText.setFocusable(true);
@@ -119,6 +127,7 @@ public class Fragment_info extends Fragment {
         editText.requestFocus();
     }
 
+    // Обработчик для кнопки сохранения
     private void onSaveButtonClick(Computer currentComputer, int numberComputer) {
         EditText name = requireView().findViewById(R.id.name);
         TextView status = requireView().findViewById(R.id.status);
@@ -129,30 +138,32 @@ public class Fragment_info extends Fragment {
         String editedStatus = status.getText().toString();
         String editedLocation = location.getText().toString();
         String editedLastOnline = online.getText().toString();
-        Log.d("TAG", "onSaveButtonClick: ");
+
         if (currentComputer == null) {
             currentComputer = new Computer();
         }
 
+        // Проверка на заполненность всех полей
         if (editedName.isEmpty() || editedStatus.isEmpty() || editedLocation.isEmpty() || editedLastOnline.isEmpty()) {
             Toast.makeText(requireContext(), "Заполните все поля", Toast.LENGTH_SHORT).show();
         } else {
+            // Обновление данных в базе данных и списке компьютеров
             currentComputer.setId(currentId);
             currentComputer.setName(editedName);
             currentComputer.setStatus(editedStatus);
             currentComputer.setLocation(editedLocation);
             currentComputer.setLastOnline(editedLastOnline);
-            Log.d("TAG", "onSaveButtonClick: ");
-            databaseAccessor.updateComputer(currentComputer.getId(), editedName, editedStatus, editedLocation, editedLastOnline);
-            Log.d("TAG", "onSaveButtonClick: ");
 
+            databaseAccessor.updateComputer(currentComputer.getId(), editedName, editedStatus, editedLocation, editedLastOnline);
             MainActivity.dataItems.set(numberComputer, currentComputer);
 
-            // Обновление адаптера
+            // Обновление адаптера и удаление текущего фрагмента
             MainActivity.adapter.notifyDataSetChanged();
-            getFragmentManager().beginTransaction().remove(this).commit();
+            requireFragmentManager().beginTransaction().remove(this).commit();
         }
     }
+
+    // Обработчик для кнопки выбора даты
     public void setDate(View v) {
         new DatePickerDialog(requireContext(), d,
                 dateAndTime.get(Calendar.YEAR),
@@ -161,21 +172,21 @@ public class Fragment_info extends Fragment {
                 .show();
     }
 
-    // отображаем диалоговое окно для выбора времени
+    // Обработчик для кнопки выбора времени
     public void setTime(View v) {
         new TimePickerDialog(requireContext(), t,
                 dateAndTime.get(Calendar.HOUR_OF_DAY),
                 dateAndTime.get(Calendar.MINUTE), true)
                 .show();
     }
-    // установка начальных даты и времени
+
+    // Метод для установки начальных даты и времени
     private void setInitialDateTime() {
         online.setText(DateUtils.formatDateTime(requireContext(),
                 dateAndTime.getTimeInMillis(),
                 DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR
                         | DateUtils.FORMAT_SHOW_TIME));
     }
-
     TimePickerDialog.OnTimeSetListener t=new TimePickerDialog.OnTimeSetListener() {
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             dateAndTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
@@ -196,6 +207,10 @@ public class Fragment_info extends Fragment {
 
     private void onDeleteButtonClick(Computer currentComputer, int numberComputer) {
         databaseAccessor.deleteComputer(currentId);
+        MainActivity.dataItems.remove(numberComputer);
+        // Обновление адаптера и удаление текущего фрагмента
+        MainActivity.adapter.notifyDataSetChanged();
+        requireFragmentManager().beginTransaction().remove(this).commit();
 
     }
 }
